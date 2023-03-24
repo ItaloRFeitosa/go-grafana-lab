@@ -1,0 +1,37 @@
+server:
+  log_level: debug
+
+logs:
+  configs:
+  - name: default
+    positions:
+      filename: /tmp/positions.yaml
+
+    clients:
+      - url: https://LOG_USERNAME:LOG_PASSWORD@LOG_URL
+
+    scrape_configs:
+    - job_name: container
+      docker_sd_configs:
+        - host: unix:///var/run/docker.sock
+          refresh_interval: 5s
+          filters:
+            - name: label
+              values: ["logging=go-grafana-lab"] 
+      relabel_configs:
+        - source_labels: ['__meta_docker_container_name']
+          regex: '/(.*)'
+          target_label: 'container'
+
+traces:
+  configs:
+  - name: default
+    remote_write:
+      - endpoint: tempo-prod-12-prod-sa-east-0.grafana.net:443
+        basic_auth:
+          username: $TRACE_USERNAME
+          password: $TRACE_PASSWORD
+    receivers:
+      jaeger:
+        protocols:
+          thrift_compact:

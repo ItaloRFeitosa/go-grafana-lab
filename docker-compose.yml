@@ -1,0 +1,95 @@
+version: "3.5"
+
+services:
+  checkout:
+    build: .
+    environment:
+      - PORT=8080
+      - SERVICE_NAME=checkout
+      - ENVIRONMENT=production
+      - CHECKOUT_URL=${CHECKOUT_URL}
+      - PAYMENT_URL=${PAYMENT_URL}
+      - ORDER_URL=${ORDER_URL}
+      - WAREHOUSE_URL=${WAREHOUSE_URL}
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=grafana-agent
+    command: "-checkout"
+    ports:
+      - ${CHECKOUT_PORT}:8080
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+    labels:
+      logging: "go-grafana-lab"
+  payment:
+    build: .
+    environment:
+      - PORT=8080
+      - SERVICE_NAME=payment
+      - ENVIRONMENT=production
+      - CHECKOUT_URL=${CHECKOUT_URL}
+      - PAYMENT_URL=${PAYMENT_URL}
+      - ORDER_URL=${ORDER_URL}
+      - WAREHOUSE_URL=${WAREHOUSE_URL}
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=grafana-agent
+    command: "-payment"
+    ports:
+      - ${PAYMENT_PORT}:8080
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+    labels:
+      logging: "go-grafana-lab"
+  order:
+    build: .
+    environment:
+      - PORT=8080
+      - SERVICE_NAME=order
+      - ENVIRONMENT=production
+      - CHECKOUT_URL=${CHECKOUT_URL}
+      - PAYMENT_URL=${PAYMENT_URL}
+      - ORDER_URL=${ORDER_URL}
+      - WAREHOUSE_URL=${WAREHOUSE_URL}
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=grafana-agent
+    command: "-order"
+    ports:
+      - ${ORDER_PORT}:8080
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+    labels:
+      logging: "go-grafana-lab"
+  warehouse:
+    build: .
+    environment:
+      - PORT=8080
+      - SERVICE_NAME=warehouse
+      - ENVIRONMENT=production
+      - CHECKOUT_URL=${CHECKOUT_URL}
+      - PAYMENT_URL=${PAYMENT_URL}
+      - ORDER_URL=${ORDER_URL}
+      - WAREHOUSE_URL=${WAREHOUSE_URL}
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=grafana-agent
+    command: "-warehouse"
+    ports:
+      - ${WAREHOUSE_PORT}:8080
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+    labels:
+      logging: "go-grafana-lab"
+  chaos:
+    build: .
+    environment:
+      - CHECKOUT_URL=${CHECKOUT_URL}
+      - PAYMENT_URL=${PAYMENT_URL}
+      - ORDER_URL=${ORDER_URL}
+      - WAREHOUSE_URL=${WAREHOUSE_URL}
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=grafana-agent
+    command: "-chaos"
+    restart: unless-stopped
+  grafana-agent:
+    image: grafana/agent:v0.30.2
+    volumes:
+      - ./.docker/grafana-agent/tmp/data:/etc/agent/data
+      - ./grafana-agent/grafana-agent.yml:/etc/agent/agent.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
