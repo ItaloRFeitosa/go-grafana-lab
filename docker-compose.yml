@@ -19,7 +19,7 @@ services:
     logging:
       driver: "json-file"
     labels:
-      logging: "go-grafana-lab"
+      grafana_logs: true
   payment:
     build: .
     environment:
@@ -38,7 +38,7 @@ services:
     logging:
       driver: "json-file"
     labels:
-      logging: "go-grafana-lab"
+      grafana_logs: true
   order:
     build: .
     environment:
@@ -57,7 +57,7 @@ services:
     logging:
       driver: "json-file"
     labels:
-      logging: "go-grafana-lab"
+      grafana_logs: true
   warehouse:
     build: .
     environment:
@@ -76,7 +76,7 @@ services:
     logging:
       driver: "json-file"
     labels:
-      logging: "go-grafana-lab"
+      grafana_logs: true
   chaos:
     build: .
     environment:
@@ -88,8 +88,14 @@ services:
     command: "-chaos"
     restart: unless-stopped
   grafana-agent:
+    env_file: ./grafana-agent/.env
     image: grafana/agent:v0.30.2
     volumes:
       - ./.docker/grafana-agent/tmp/data:/etc/agent/data
       - ./grafana-agent/grafana-agent.yml:/etc/agent/agent.yaml
       - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint:
+      - /bin/agent
+      - -config.file=/etc/agent/agent.yaml
+      - -metrics.wal-directory=/tmp/agent/wal
+      - -config.expand-env

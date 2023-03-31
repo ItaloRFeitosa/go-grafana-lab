@@ -1,0 +1,303 @@
+{
+  "family": "go-grafana-lab",
+  "containerDefinitions": [
+    {
+      "name": "checkout",
+      "hostname": "checkout",
+      "image": "italorfeitosa/go_grafana_lab:latest",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "CHECKOUT_URL",
+          "value": "http://checkout:8080"
+        },
+        {
+          "name": "ORDER_URL",
+          "value": "http://order:8080"
+        },
+        {
+          "name": "PAYMENT_URL",
+          "value": "http://payment:8080"
+        },
+        {
+          "name": "WAREHOUSE_URL",
+          "value": "http://warehouse:8080"
+        },
+        {
+          "name": "OTEL_EXPORTER_JAEGER_AGENT_HOST",
+          "value": "host.docker.internal"
+        },
+        {
+          "name": "SERVICE_NAME",
+          "value": "checkout"
+        }
+      ],
+      "memoryReservation": 128,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "json-file",
+        "options": {
+          "max-size": "10mb",
+          "max-file": "3"
+        }
+      },
+      "dockerLabels": {
+        "grafana_logs": "true"
+      },
+      "command": [
+        "-checkout"
+      ],
+      "links": [
+        "order",
+        "payment"
+      ],
+      "extraHosts": [
+        {
+          "hostname": "host.docker.internal",
+          "ipAddress": "172.17.0.1"
+        }
+      ]
+    },
+    {
+      "name": "order",
+      "hostname": "order",
+      "image": "italorfeitosa/go_grafana_lab:latest",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "CHECKOUT_URL",
+          "value": "http://checkout:8080"
+        },
+        {
+          "name": "ORDER_URL",
+          "value": "http://order:8080"
+        },
+        {
+          "name": "PAYMENT_URL",
+          "value": "http://payment:8080"
+        },
+        {
+          "name": "WAREHOUSE_URL",
+          "value": "http://warehouse:8080"
+        },
+        {
+          "name": "OTEL_EXPORTER_JAEGER_AGENT_HOST",
+          "value": "host.docker.internal"
+        },
+        {
+          "name": "SERVICE_NAME",
+          "value": "order"
+        }
+      ],
+      "memoryReservation": 128,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "json-file",
+        "options": {
+          "max-size": "10mb",
+          "max-file": "3"
+        }
+      },
+      "dockerLabels": {
+        "grafana_logs": "true"
+      },
+      "command": [
+        "-order"
+      ],
+      "links": [
+        "warehouse"
+      ],
+      "extraHosts": [
+        {
+          "hostname": "host.docker.internal",
+          "ipAddress": "172.17.0.1"
+        }
+      ]
+    },
+    {
+      "name": "payment",
+      "hostname": "payment",
+      "image": "italorfeitosa/go_grafana_lab:latest",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "CHECKOUT_URL",
+          "value": "http://checkout:8080"
+        },
+        {
+          "name": "ORDER_URL",
+          "value": "http://order:8080"
+        },
+        {
+          "name": "PAYMENT_URL",
+          "value": "http://payment:8080"
+        },
+        {
+          "name": "WAREHOUSE_URL",
+          "value": "http://warehouse:8080"
+        },
+        {
+          "name": "OTEL_EXPORTER_JAEGER_AGENT_HOST",
+          "value": "host.docker.internal"
+        },
+        {
+          "name": "SERVICE_NAME",
+          "value": "payment"
+        }
+      ],
+      "memoryReservation": 128,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "json-file",
+        "options": {
+          "max-size": "10mb",
+          "max-file": "3"
+        }
+      },
+      "dockerLabels": {
+        "grafana_logs": "true"
+      },
+      "command": [
+        "-payment"
+      ],
+      "extraHosts": [
+        {
+          "hostname": "host.docker.internal",
+          "ipAddress": "172.17.0.1"
+        }
+      ]
+    },
+    {
+      "name": "warehouse",
+      "hostname": "warehouse",
+      "image": "italorfeitosa/go_grafana_lab:latest",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "CHECKOUT_URL",
+          "value": "http://checkout:8080"
+        },
+        {
+          "name": "ORDER_URL",
+          "value": "http://order:8080"
+        },
+        {
+          "name": "PAYMENT_URL",
+          "value": "http://payment:8080"
+        },
+        {
+          "name": "WAREHOUSE_URL",
+          "value": "http://warehouse:8080"
+        },
+        {
+          "name": "OTEL_EXPORTER_JAEGER_AGENT_HOST",
+          "value": "host.docker.internal"
+        },
+        {
+          "name": "SERVICE_NAME",
+          "value": "warehouse"
+        }
+      ],
+      "memoryReservation": 128,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "json-file",
+        "options": {
+          "max-size": "10mb",
+          "max-file": "3"
+        }
+      },
+      "dockerLabels": {
+        "grafana_logs": "true"
+      },
+      "command": [
+        "-warehouse"
+      ],
+      "extraHosts": [
+        {
+          "hostname": "host.docker.internal",
+          "ipAddress": "172.17.0.1"
+        }
+      ]
+    },
+    {
+      "name": "chaos",
+      "hostname": "chaos",
+      "image": "italorfeitosa/go_grafana_lab:latest",
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "CHECKOUT_URL",
+          "value": "http://checkout:8080"
+        },
+        {
+          "name": "ORDER_URL",
+          "value": "http://order:8080"
+        },
+        {
+          "name": "PAYMENT_URL",
+          "value": "http://payment:8080"
+        },
+        {
+          "name": "WAREHOUSE_URL",
+          "value": "http://warehouse:8080"
+        },
+        {
+          "name": "OTEL_EXPORTER_JAEGER_AGENT_HOST",
+          "value": "host.docker.internal"
+        }
+      ],
+      "memoryReservation": 64,
+      "logConfiguration": {
+        "logDriver": "json-file",
+        "options": {
+          "max-size": "10mb",
+          "max-file": "3"
+        }
+      },
+      "dockerLabels": {
+        "grafana_logs": "true"
+      },
+      "command": [
+        "-chaos"
+      ],
+      "links": [
+        "checkout"
+      ]
+    }
+  ],
+  "volumes": [],
+  "networkMode": "bridge",
+  "executionRoleArn": "arn:aws:iam::673857755305:role/ecsTaskExecutionRole"
+}

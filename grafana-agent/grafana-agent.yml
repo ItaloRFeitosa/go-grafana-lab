@@ -8,7 +8,7 @@ logs:
       filename: /tmp/positions.yaml
 
     clients:
-      - url: https://LOG_USERNAME:LOG_PASSWORD@LOG_URL
+      - url: ${LOGS_DEFAULT_CLIENT_URL}
 
     scrape_configs:
     - job_name: container
@@ -17,7 +17,7 @@ logs:
           refresh_interval: 5s
           filters:
             - name: label
-              values: ["logging=go-grafana-lab"] 
+              values: ["grafana_logs=true"] 
       relabel_configs:
         - source_labels: ['__meta_docker_container_name']
           regex: '/(.*)'
@@ -27,11 +27,26 @@ traces:
   configs:
   - name: default
     remote_write:
-      - endpoint: tempo-prod-12-prod-sa-east-0.grafana.net:443
+      - endpoint: ${TRACES_DEFAULT_REMOTE_WRITE_ENDPOINT}
         basic_auth:
-          username: $TRACE_USERNAME
-          password: $TRACE_PASSWORD
+          username: ${TRACES_DEFAULT_REMOTE_WRITE_USERNAME}
+          password: ${TRACES_DEFAULT_REMOTE_WRITE_PASSWORD}
     receivers:
       jaeger:
         protocols:
           thrift_compact:
+
+# metrics:
+#   global:
+#     scrape_interval: 60s
+#   configs:
+#   - name: hosted-prometheus
+#     scrape_configs:
+#       - job_name: node
+#         static_configs:
+#         - targets: ['app:8080']
+#     remote_write:
+#       - url: ${METRICS_DEFAULT_REMOTE_WRITE_URL}
+#         basic_auth:
+#           username: ${METRICS_DEFAULT_REMOTE_WRITE_USERNAME}
+#           password: ${METRICS_DEFAULT_REMOTE_WRITE_PASSWORD}

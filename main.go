@@ -95,7 +95,7 @@ func startServer() {
 			"isCheckout":  isCheckout,
 			"isPayment":   isPayment,
 			"isOrder":     isOrder,
-			"isSarehouse": isWarehouse,
+			"isWarehouse": isWarehouse,
 		})
 	})
 
@@ -125,12 +125,15 @@ func startServer() {
 		if err := app.Shutdown(); err != nil {
 			log.Fatal(err)
 		}
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Fatal(err)
+		}
 	})
 }
 
 func GracefulShutdown(shutdownCallback func(context.Context)) {
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-quit
 
 	log.Println("gracefully shutdown process...")
@@ -139,12 +142,9 @@ func GracefulShutdown(shutdownCallback func(context.Context)) {
 	defer cancel()
 	defer signal.Stop(quit)
 
-	shutdownCallback(ctx)
+	go shutdownCallback(ctx)
 
-	select {
-	case <-ctx.Done():
-		log.Println("timeout of 5 seconds.")
-	}
+	<-ctx.Done()
 
 	log.Println("process exiting")
 }

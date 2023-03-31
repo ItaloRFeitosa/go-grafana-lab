@@ -1,0 +1,60 @@
+{
+    "family": "grafana-agent",
+    "containerDefinitions": [
+      {
+        "hostname": "grafana-agent",
+        "name": "grafana-agent",
+        "image": "italorfeitosa/grafana_agent:latest",
+        "environmentFiles": [
+          {
+            "type": "s3",
+            "value": "arn:aws:s3:::italorfeitosa-environment-variables/grafana_agent.env"
+          }
+        ],
+        "portMappings": [
+          {
+              "containerPort": 6831,
+              "hostPort": 6831,
+              "protocol": "udp"
+          }
+        ],
+        "memoryReservation": 128,
+        "mountPoints": [
+          {
+            "sourceVolume": "grafana-agent-volume",
+            "containerPath": "/etc/agent/data"
+          },
+          {
+            "sourceVolume": "docker-socket-volume",
+            "containerPath": "/var/run/docker.sock"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "json-file",
+          "options": {
+            "max-size": "10mb",
+            "max-file": "3"
+          }
+        },
+        "dockerLabels": {
+          "grafana_logs": "true"
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "name": "grafana-agent-volume",
+        "host": {
+          "sourcePath": "/tmp/grafana-agent/data"
+        }
+      },
+      {
+        "name": "docker-socket-volume",
+        "host": {
+          "sourcePath": "/var/run/docker.sock"
+        }
+      }
+    ],
+    "networkMode": "bridge",
+    "executionRoleArn": "arn:aws:iam::673857755305:role/ecsTaskExecutionRole"
+  }
