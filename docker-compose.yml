@@ -19,7 +19,9 @@ services:
     logging:
       driver: "json-file"
     labels:
-      grafana_logs: true
+      - "grafana_logs=true"
+      - "grafana_metrics=true"
+      - "service=checkout"
   payment:
     build: .
     environment:
@@ -38,7 +40,9 @@ services:
     logging:
       driver: "json-file"
     labels:
-      grafana_logs: true
+      - "grafana_logs=true"
+      - "grafana_metrics=true"
+      - "service=payment"
   order:
     build: .
     environment:
@@ -57,7 +61,9 @@ services:
     logging:
       driver: "json-file"
     labels:
-      grafana_logs: true
+      - "grafana_logs=true"
+      - "grafana_metrics=true"
+      - "service=order"
   warehouse:
     build: .
     environment:
@@ -76,7 +82,9 @@ services:
     logging:
       driver: "json-file"
     labels:
-      grafana_logs: true
+      - "grafana_logs=true"
+      - "grafana_metrics=true"
+      - "service=warehouse"
   chaos:
     build: .
     environment:

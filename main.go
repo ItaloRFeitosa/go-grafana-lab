@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -20,6 +21,7 @@ import (
 	"github.com/italorfeitosa/go-grafana-lab/payment"
 	"github.com/italorfeitosa/go-grafana-lab/tracing"
 	"github.com/italorfeitosa/go-grafana-lab/warehouse"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/google/uuid"
 
@@ -98,6 +100,8 @@ func startServer() {
 			"isWarehouse": isWarehouse,
 		})
 	})
+
+	app.Get("/metrics", adaptor.HTTPHandler(promhttp.Handler()))
 
 	if isCheckout {
 		checkout.SetRoutes(app)

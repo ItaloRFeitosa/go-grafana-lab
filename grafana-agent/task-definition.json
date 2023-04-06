@@ -8,7 +8,7 @@
         "environmentFiles": [
           {
             "type": "s3",
-            "value": "arn:aws:s3:::italorfeitosa-environment-variables/grafana_agent.env"
+            "value": "arn:aws:s3:::genesis-environments-dev/grafana-agent.env"
           }
         ],
         "portMappings": [
@@ -37,7 +37,8 @@
           }
         },
         "dockerLabels": {
-          "grafana_logs": "true"
+          "grafana_logs": "true",
+          "service": "grafana-agent"
         }
       }
     ],
@@ -56,5 +57,5 @@
       }
     ],
     "networkMode": "bridge",
-    "executionRoleArn": "arn:aws:iam::673857755305:role/ecsTaskExecutionRole"
+    "executionRoleArn": "arn:aws:iam::971362923545:role/ecsTaskExecutionRole"
   }
