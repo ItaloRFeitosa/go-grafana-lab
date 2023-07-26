@@ -36,11 +36,14 @@ func getEnvIntOrDefault(envName string, defaultValue int) int {
 func Do(fn func(), dur time.Duration) func() {
 	var stopCh chan struct{}
 	go func(stopCh chan struct{}) {
+		ticker := time.NewTicker(dur)
+		defer ticker.Stop()
 		for {
 			select {
 			case <-stopCh:
+				stopCh <- struct{}{}
 				return
-			case <-time.Tick(dur):
+			case <-ticker.C:
 				fn()
 			}
 		}
@@ -48,6 +51,7 @@ func Do(fn func(), dur time.Duration) func() {
 
 	return func() {
 		stopCh <- struct{}{}
+		<-stopCh
 	}
 }
 
