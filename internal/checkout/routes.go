@@ -5,13 +5,15 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/italorfeitosa/go-grafana-lab/order"
-	"github.com/italorfeitosa/go-grafana-lab/payment"
+	"github.com/italorfeitosa/go-grafana-lab/internal/checkout/model"
+	orderclient "github.com/italorfeitosa/go-grafana-lab/internal/order/client"
+	paymentclient "github.com/italorfeitosa/go-grafana-lab/internal/payment/client"
+	paymentmodel "github.com/italorfeitosa/go-grafana-lab/internal/payment/model"
 )
 
 func SetRoutes(app *fiber.App) {
-	orderClient := order.NewClient()
-	paymentClient := payment.NewClient()
+	orderClient := orderclient.New()
+	paymentClient := paymentclient.New()
 
 	app.Put("/checkouts/:id", func(c *fiber.Ctx) error {
 		if err := orderClient.CreateOrder(c.UserContext(), c.Params("id")); err != nil {
@@ -23,7 +25,7 @@ func SetRoutes(app *fiber.App) {
 
 	app.Patch("/checkouts/:id/finish", func(c *fiber.Ctx) error {
 		var (
-			paym Payment
+			paym model.Payment
 			err  error
 		)
 
@@ -53,7 +55,7 @@ func SetRoutes(app *fiber.App) {
 			return err
 		}
 
-		if err := paymentClient.CreatePayment(c.UserContext(), payment.Payment{
+		if err := paymentClient.CreatePayment(c.UserContext(), paymentmodel.Payment{
 			ID:            uuid.NewString(),
 			CorrelationID: id,
 		}); err != nil {

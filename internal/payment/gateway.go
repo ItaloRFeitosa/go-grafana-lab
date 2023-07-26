@@ -3,12 +3,12 @@ package payment
 import (
 	"context"
 
-	"github.com/italorfeitosa/go-grafana-lab/chaos"
-	"github.com/italorfeitosa/go-grafana-lab/tracing"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/chaos"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/tracing"
 	"go.opentelemetry.io/otel/codes"
 )
 
-func CallPaymentGateway(ctx context.Context) error {
+func callPaymentGateway(ctx context.Context) error {
 	_, span := tracing.Start(ctx, "gateway::paymentAttempt")
 	defer span.End()
 

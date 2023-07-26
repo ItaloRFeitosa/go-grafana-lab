@@ -4,14 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/italorfeitosa/go-grafana-lab/chaos"
-	"github.com/italorfeitosa/go-grafana-lab/tracing"
+	"github.com/italorfeitosa/go-grafana-lab/internal/payment/model"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/chaos"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/tracing"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
-func paymentOperation(ctx context.Context, operationName string, payment Payment) error {
+func callRepositoryOperation(ctx context.Context, operationName string, payment model.Payment) error {
 	spanName := fmt.Sprint("repository::", operationName)
 	attrs := []attribute.KeyValue{
 		attribute.String("payment.correlation.id", payment.CorrelationID),

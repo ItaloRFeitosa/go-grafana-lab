@@ -1,29 +1,30 @@
-package order
+package client
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/italorfeitosa/go-grafana-lab/env"
-	"github.com/italorfeitosa/go-grafana-lab/httpclient"
+	"github.com/italorfeitosa/go-grafana-lab/internal/env"
+	"github.com/italorfeitosa/go-grafana-lab/internal/order/model"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/httpclient"
 )
 
 type Client struct {
 	resty *resty.Client
 }
 
-func NewClient() *Client {
+func New() *Client {
 	return &Client{
 		resty: httpclient.NewResty(env.OrderURL),
 	}
 }
 
-func (c *Client) GetOrder(ctx context.Context, id string) (Order, error) {
-	var order Order
+func (c *Client) GetOrder(ctx context.Context, id string) (model.Order, error) {
+	var order model.Order
 
 	endpoint := fmt.Sprintf("/orders/%s", id)
-	req := c.resty.R().SetContext(ctx).SetResult(Order{})
+	req := c.resty.R().SetContext(ctx).SetResult(model.Order{})
 	res, err := req.Get(endpoint)
 	if err != nil {
 		return order, fmt.Errorf("error on get order: %w", err)
@@ -33,13 +34,13 @@ func (c *Client) GetOrder(ctx context.Context, id string) (Order, error) {
 		return order, fmt.Errorf("error on get order, status code: %d", res.StatusCode())
 	}
 
-	order = *res.Result().(*Order)
+	order = *res.Result().(*model.Order)
 
 	return order, nil
 }
 
 func (c *Client) CreateOrder(ctx context.Context, id string) error {
-	req := c.resty.R().SetContext(ctx).SetBody(Order{ID: id})
+	req := c.resty.R().SetContext(ctx).SetBody(model.Order{ID: id})
 
 	res, err := req.Post("/orders")
 

@@ -8,7 +8,7 @@ import (
 
 func SetRoutes(app *fiber.App) {
 	app.Patch("/warehouse/orders/:id/dispatch", func(c *fiber.Ctx) error {
-		if err := SendMessageToBroker(c.UserContext()); err != nil {
+		if err := sendMessageToBroker(c.UserContext()); err != nil {
 			return err
 		}
 

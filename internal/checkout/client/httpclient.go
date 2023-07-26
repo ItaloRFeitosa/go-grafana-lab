@@ -1,19 +1,20 @@
-package checkout
+package client
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/italorfeitosa/go-grafana-lab/env"
-	"github.com/italorfeitosa/go-grafana-lab/httpclient"
+	"github.com/italorfeitosa/go-grafana-lab/internal/checkout/model"
+	"github.com/italorfeitosa/go-grafana-lab/internal/env"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/httpclient"
 )
 
 type Client struct {
 	resty *resty.Client
 }
 
-func NewClient() *Client {
+func New() *Client {
 	return &Client{
 		resty: httpclient.NewResty(env.CheckoutURL),
 	}
@@ -36,7 +37,7 @@ func (c *Client) StartCheckout(ctx context.Context, id string) error {
 	return nil
 }
 
-func (c *Client) FinishCheckout(ctx context.Context, payment Payment) error {
+func (c *Client) FinishCheckout(ctx context.Context, payment model.Payment) error {
 	endpoint := fmt.Sprintf("/checkouts/%s/finish", payment.CorrelationID)
 
 	req := c.resty.R().SetContext(ctx).SetBody(payment)

@@ -1,11 +1,11 @@
-package order
+package warehouse
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/italorfeitosa/go-grafana-lab/chaos"
-	"github.com/italorfeitosa/go-grafana-lab/tracing"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/chaos"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/tracing"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"

@@ -3,12 +3,12 @@ package warehouse
 import (
 	"context"
 
-	"github.com/italorfeitosa/go-grafana-lab/chaos"
-	"github.com/italorfeitosa/go-grafana-lab/tracing"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/chaos"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/tracing"
 	"go.opentelemetry.io/otel/codes"
 )
 
-func SendMessageToBroker(ctx context.Context) error {
+func sendMessageToBroker(ctx context.Context) error {
 	ctx, span := tracing.Start(ctx, "broker::sendMessage")
 	defer span.End()
 

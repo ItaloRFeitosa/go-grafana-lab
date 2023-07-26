@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	maxLatencyMilli = float64(getEnvIntOrDefault("CHAOS_MAX_LATENCY_MILLI", 2000))
-	salt            = getEnvIntOrDefault("CHAOS_SALT", 10)
+	maxLatencyMilli = float64(getEnvIntOrDefault("CHAOS_MAX_LATENCY_MS", 2000))
+	latencySalt     = getEnvIntOrDefault("CHAOS_LATENCY_SALT", 10)
+	errorSalt       = getEnvIntOrDefault("CHAOS_ERROR_SALT", 10)
 )
 
 func getEnvIntOrDefault(envName string, defaultValue int) int {
@@ -51,7 +52,7 @@ func Do(fn func(), dur time.Duration) func() {
 }
 
 func Latency() {
-	factor := -float64(rand.Intn(salt))
+	factor := -float64(rand.Intn(latencySalt))
 
 	latency := time.Duration(maxLatencyMilli*(1-math.Exp2(factor))) * time.Millisecond
 
@@ -60,7 +61,7 @@ func Latency() {
 
 func Error() error {
 	var err error
-	errFactor := rand.Intn(salt)
+	errFactor := rand.Intn(errorSalt)
 
 	if errFactor == 0 {
 		err = fmt.Errorf("some ramdom error")

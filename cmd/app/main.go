@@ -15,12 +15,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/italorfeitosa/go-grafana-lab/chaos"
-	"github.com/italorfeitosa/go-grafana-lab/checkout"
-	"github.com/italorfeitosa/go-grafana-lab/order"
-	"github.com/italorfeitosa/go-grafana-lab/payment"
-	"github.com/italorfeitosa/go-grafana-lab/tracing"
-	"github.com/italorfeitosa/go-grafana-lab/warehouse"
+	"github.com/italorfeitosa/go-grafana-lab/internal/checkout"
+	checkoutclient "github.com/italorfeitosa/go-grafana-lab/internal/checkout/client"
+	"github.com/italorfeitosa/go-grafana-lab/internal/order"
+	"github.com/italorfeitosa/go-grafana-lab/internal/payment"
+	"github.com/italorfeitosa/go-grafana-lab/internal/warehouse"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/chaos"
+	"github.com/italorfeitosa/go-grafana-lab/pkg/tracing"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/google/uuid"
@@ -56,7 +57,7 @@ func main() {
 }
 
 func startChaos() {
-	checkoutClient := checkout.NewClient()
+	checkoutClient := checkoutclient.New()
 	stop := chaos.Do(func() {
 		log.Println("calling checkout")
 		id := uuid.NewString()

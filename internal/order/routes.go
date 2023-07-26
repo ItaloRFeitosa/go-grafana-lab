@@ -4,18 +4,19 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/italorfeitosa/go-grafana-lab/warehouse"
+	"github.com/italorfeitosa/go-grafana-lab/internal/order/model"
+	warehouseclient "github.com/italorfeitosa/go-grafana-lab/internal/warehouse/client"
 )
 
 func SetRoutes(app *fiber.App) {
-	warehouseClient := warehouse.NewClient()
+	warehouseClient := warehouseclient.New()
 
 	app.Get("/orders/:id", func(c *fiber.Ctx) error {
-		order := Order{ID: c.Params("id")}
+		order := model.Order{ID: c.Params("id")}
 
 		ctx := c.UserContext()
 
-		if err := orderOperation(ctx, "getOrder", order.ID); err != nil {
+		if err := callRepositoryOperation(ctx, "getOrder", order.ID); err != nil {
 			return err
 		}
 
@@ -23,11 +24,11 @@ func SetRoutes(app *fiber.App) {
 	})
 
 	app.Patch("/orders/:id/approve", func(c *fiber.Ctx) error {
-		order := Order{ID: c.Params("id")}
+		order := model.Order{ID: c.Params("id")}
 
 		ctx := c.UserContext()
 
-		if err := orderOperation(ctx, "approveOrder", order.ID); err != nil {
+		if err := callRepositoryOperation(ctx, "approveOrder", order.ID); err != nil {
 			return err
 		}
 
@@ -39,11 +40,11 @@ func SetRoutes(app *fiber.App) {
 	})
 
 	app.Patch("/orders/:id/fail", func(c *fiber.Ctx) error {
-		order := Order{ID: c.Params("id")}
+		order := model.Order{ID: c.Params("id")}
 
 		ctx := c.UserContext()
 
-		if err := orderOperation(ctx, "failOrder", order.ID); err != nil {
+		if err := callRepositoryOperation(ctx, "failOrder", order.ID); err != nil {
 			return err
 		}
 
@@ -51,7 +52,7 @@ func SetRoutes(app *fiber.App) {
 	})
 
 	app.Post("/orders", func(c *fiber.Ctx) error {
-		var order Order
+		var order model.Order
 
 		ctx := c.UserContext()
 
@@ -63,7 +64,7 @@ func SetRoutes(app *fiber.App) {
 			return err
 		}
 
-		if err := orderOperation(ctx, "saveOrder", order.ID); err != nil {
+		if err := callRepositoryOperation(ctx, "saveOrder", order.ID); err != nil {
 			return err
 		}
 

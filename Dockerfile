@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.19-alpine3.16 AS build_base
+FROM --platform=$BUILDPLATFORM golang:1.20-alpine3.16 AS build_base
 
 RUN apk add --no-cache git
 
@@ -12,7 +12,7 @@ RUN go mod vendor
 
 COPY . .
 ARG TARGETOS TARGETARCH
-RUN env GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o ./out/main ./main.go
+RUN env GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o ./out/main ./cmd/app/main.go
 
 FROM alpine:3.16 
 RUN apk add ca-certificates
